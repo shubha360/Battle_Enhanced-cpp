@@ -1,4 +1,4 @@
-#include "BattleGround.h"
+#include "include/BattleGround.h"
 
 int main() {
     BattleGround ground;

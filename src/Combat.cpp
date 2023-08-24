@@ -1,6 +1,9 @@
-#include "Combat.h"
+#include "../include/Combat.h"
 
-Combat::Combat() {}
+Combat::Combat() {
+    _entity1 = Entity('1', 3, 3);
+    _entity2 = Entity('2', 8, 8);
+}
 
 void Combat::init() {
     cout << "*** Legends of Console Warfare ***\n\n";
@@ -14,6 +17,15 @@ void Combat::init() {
     _secondSideName = _takeStringInput("Enter the name of second side: ");
     _secondSideSign = _takeCharInput("Enter the sign of " + _secondSideName + ": ");
     _secondSideEntities = _takeIntInput("Enter the number of entities of " + _secondSideName + ": ");
+}
+
+void Combat::startBattle() {
+    _battleGround.setEntity(&_entity1);
+    _battleGround.setEntity(&_entity2);
+
+    while (!_entity1.isDead() && !_entity2.isDead()) {
+        if ()
+    }
 }
 
 string Combat::_takeStringInput(string prompt) {

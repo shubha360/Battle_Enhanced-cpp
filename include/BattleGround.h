@@ -1,9 +1,10 @@
-#ifndef BATTLEGROUND_H
-#define BATTLEGROUND_H
+#pragma once
 
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include "Entity.h"
 
 using namespace std;
 
@@ -15,10 +16,10 @@ public:
     BattleGround();
     void printBattleGround();
 
+    void setEntity(Entity* entity);
+
 private:
     vector<string> _battleGrid;
 
     string _topAndBottomLine;
 };
-
-#endif // BATTLEGROUND_H

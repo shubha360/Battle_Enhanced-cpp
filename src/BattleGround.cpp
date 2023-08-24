@@ -1,4 +1,4 @@
-#include "BattleGround.h"
+#include "../include/BattleGround.h"
 
 const int BattleGround::BATTLEGROUND_WIDTH = 70;
 const int BattleGround::BATTLEGROUND_HEIGHT = 20;
@@ -25,4 +25,10 @@ void BattleGround::printBattleGround() {
     ground += "\n";
 
     cout << ground;
+}
+
+void BattleGround::setEntity(Entity* entity) {
+    if (_battleGrid[entity->getPosY()][entity->getPosX()] == ' ') {
+        _battleGrid[entity->getPosY()][entity->getPosX()] = entity->getSign();
+    }
 }
