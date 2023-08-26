@@ -2,28 +2,27 @@
 
 #include <iostream>
 #include <string>
-#include <conio.h>
+#include <fstream>
 
-#include "Entity.h"
-#include "BattleGround.h"
-
-using namespace std;
+#include "Duel.h"
 
 class Combat {
 public:
     Combat();
+    ~Combat();
+
     void init();
     void startBattle();
+    void endBattle();
+
+    void printBattleGround();
 
 private:
-    string _firstSideName, _secondSideName;
-    int _firstSideEntities, _secondSideEntities;
-    char _firstSideSign, _secondSideSign;
+    vector<string> _battleGround;
+    vector<Entity*> _sideOne;
+    vector<Entity*> _sideTwo;
+    vector<Duel*> _duels;
 
-    BattleGround _battleGround;
-    Entity _entity1, _entity2;
-
-    string _takeStringInput(string prompt);
-    char _takeCharInput(string prompt);
-    int _takeIntInput(string prompt);
+    int _sideOneAlive, _sideTwoAlive;
+    string _topIndent;
 };

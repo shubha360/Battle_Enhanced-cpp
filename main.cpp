@@ -1,8 +1,10 @@
-#include "include/BattleGround.h"
+#include "include/Combat.h"
 
 int main() {
-    BattleGround ground;
-    ground.printBattleGround();
+    Combat combat;
+    combat.init();
+    combat.startBattle();
+    combat.endBattle();
 
     return 0;
 }
