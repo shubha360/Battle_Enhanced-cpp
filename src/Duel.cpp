@@ -7,13 +7,11 @@ uniform_int_distribution<int> Duel::_attackIntensityGenerator = uniform_int_dist
 Duel::Duel() {
 	_one = nullptr;
 	_two = nullptr;
-	_duelEnded = false;
 }
 
 Duel::Duel(Entity* one, Entity* two) {
 	_one = one;
 	_two = two;
-	_duelEnded = false;
 }
 
 Entity* Duel::attack() {
@@ -33,7 +31,6 @@ Entity* Duel::attack() {
 				winner = _one;
 
 				_two->died();
-				_duelEnded = true;
 			}
 		}
 		else {
@@ -44,7 +41,6 @@ Entity* Duel::attack() {
 				winner = _two;
 
 				_one->died();
-				_duelEnded = true;
 			}
 		}
 	}

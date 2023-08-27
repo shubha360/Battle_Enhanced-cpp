@@ -94,8 +94,8 @@ void Entity::takeDamage(int damage) {
 }
 
 void Entity::died() {
-	_dead = true;
 	(*_battleGround)[_posY][_posX] = ' ';
+	_dead = true;
 	_sign = ' ';
 	_posX = 0;
 	_posY = 0;

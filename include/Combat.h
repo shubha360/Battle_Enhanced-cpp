@@ -14,7 +14,7 @@ public:
     ~Combat();
 
     void init(string combatFile);
-    void startBattle();
+    void startBattle(int makeAttackSlowInMilli);
     void endBattle();
 
     void printBattleGround();

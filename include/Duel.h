@@ -12,14 +12,12 @@ public:
 	Entity* attack();
 	Entity* getOne() { return _one; }
 	Entity* getTwo() { return _two; }
-	bool isDuelEnded() { return _duelEnded; }
 	bool isOneDead() { return _one->isDead(); }
 	bool isTwoDead() { return _two->isDead(); }
 
 private:
 	Entity* _one;
 	Entity* _two;
-	bool _duelEnded;
 
 	static default_random_engine _randomEngine;
 	static uniform_int_distribution<int> _nextTurnGenerator;

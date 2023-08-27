@@ -60,9 +60,10 @@ void Combat::init(string combatFile) {
     }
 }
 
-void Combat::startBattle() {
+void Combat::startBattle(int makeAttackSlowInMilli) {
     printBattleGround();
-    //chrono::milliseconds duration(50);
+    chrono::milliseconds duration(makeAttackSlowInMilli);
+    int finalWinner;
 
     while (_sideOneAlive > 0 && _sideTwoAlive > 0) {
        
@@ -94,7 +95,7 @@ void Combat::startBattle() {
                     }
                 }
                 else {
-                    //this_thread::sleep_for(duration);
+                    this_thread::sleep_for(duration);
                     Entity* winner = _duels[i]->attack();
 
                     if (winner != nullptr) {
@@ -106,8 +107,10 @@ void Combat::startBattle() {
 
                             _sideTwoAlive--;
 
-                            if (_sideTwoAlive == 0)
+                            if (_sideTwoAlive <= 0) {
+                                finalWinner = 1;
                                 break;
+                            }
 
                             _duels[i] = new Duel(winner, winner->findTarget(_sideTwo));
                             i--;
@@ -116,18 +119,22 @@ void Combat::startBattle() {
 
                             _sideOneAlive--;
 
-                            if (_sideTwoAlive == 0)
+                            if (_sideOneAlive <= 0) {
+                                finalWinner = 2;
                                 break;
+                            }
 
                             _duels[i] = new Duel(winner, winner->findTarget(_sideOne));
                             i--;
                         }
                     }
-                    printBattleGround();
                 }
+                printBattleGround();
             }
         }
     }
+    printBattleGround();
+    cout << finalWinner << " won!\n\n";
 }
 
 void Combat::endBattle() {
