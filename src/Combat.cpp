@@ -62,37 +62,68 @@ void Combat::init(string combatFile) {
 
 void Combat::startBattle() {
     printBattleGround();
-    chrono::milliseconds duration(50);
+    //chrono::milliseconds duration(50);
 
     while (_sideOneAlive > 0 && _sideTwoAlive > 0) {
        
         for (int i = 0; i < _duels.size(); i++) {
             
-            if (!_duels[i]->isDuelEnded()) {
+            if (_duels[i] != NULL) {
 
                 if (_duels[i]->isOneDead() || _duels[i]->isTwoDead()) {
-                    _duels[i]->isDuelEnded();
-                } 
+                    
+                    Entity* alive = nullptr;
+
+                    if (_duels[i]->isOneDead()) {
+                        alive = _duels[i]->getTwo();
+                    }
+                    else {
+                        alive = _duels[i]->getOne();
+                    }
+
+                    delete _duels[i];
+                    _duels[i] = NULL;
+
+                    if (alive->getSign() == '1') {
+                        _duels[i] = new Duel(alive, alive->findTarget(_sideTwo));
+                        i--;
+                    }
+                    else if (alive->getSign() == '2') {
+                        _duels[i] = new Duel(alive, alive->findTarget(_sideOne));
+                        i--;
+                    }
+                }
                 else {
-                    this_thread::sleep_for(duration);
+                    //this_thread::sleep_for(duration);
                     Entity* winner = _duels[i]->attack();
 
                     if (winner != nullptr) {
+
+                        delete _duels[i];
+                        _duels[i] = NULL;
+
                         if (winner->getSign() == '1') {
+
                             _sideTwoAlive--;
-                            _duels.push_back(new Duel(winner, winner->findTarget(_sideTwo)));
+
+                            if (_sideTwoAlive == 0)
+                                break;
+
+                            _duels[i] = new Duel(winner, winner->findTarget(_sideTwo));
+                            i--;
                         }
                         else if (winner->getSign() == '2') {
+
                             _sideOneAlive--;
-                            _duels.push_back(new Duel(winner, winner->findTarget(_sideOne)));
+
+                            if (_sideTwoAlive == 0)
+                                break;
+
+                            _duels[i] = new Duel(winner, winner->findTarget(_sideOne));
+                            i--;
                         }
                     }
-
                     printBattleGround();
-
-                    if (_sideOneAlive == 0 || _sideTwoAlive == 0) {
-                        break;
-                    }
                 }
             }
         }

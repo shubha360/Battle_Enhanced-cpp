@@ -10,6 +10,8 @@ public:
 	Duel(Entity* one, Entity* two);
 
 	Entity* attack();
+	Entity* getOne() { return _one; }
+	Entity* getTwo() { return _two; }
 	bool isDuelEnded() { return _duelEnded; }
 	bool isOneDead() { return _one->isDead(); }
 	bool isTwoDead() { return _two->isDead(); }
