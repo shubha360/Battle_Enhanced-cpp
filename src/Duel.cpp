@@ -7,19 +7,16 @@ uniform_int_distribution<int> Duel::_attackIntensityGenerator = uniform_int_dist
 Duel::Duel() {
 	_one = nullptr;
 	_two = nullptr;
-	_duelEnded = false;
 }
 
 Duel::Duel(Entity* one, Entity* two) {
 	_one = one;
 	_two = two;
-	_duelEnded = false;
 }
 
 Entity* Duel::attack() {
 
 	Entity* winner = nullptr;
-
 	int distance = _getEntityDistance();
 
 	if (distance == 1) {
@@ -28,12 +25,12 @@ Entity* Duel::attack() {
 
 		if (nextTurn == 1) {
 			_two->takeDamage(20 * attackIntensity);
-			
+
 			// opponent died
 			if (_two->getHealth() <= 0) {
 				winner = _one;
+
 				_two->died();
-				_duelEnded = true;
 			}
 		}
 		else {
@@ -42,8 +39,8 @@ Entity* Duel::attack() {
 			// soldier died
 			if (_one->getHealth() <= 0) {
 				winner = _two;
+
 				_one->died();
-				_duelEnded = true;
 			}
 		}
 	}
