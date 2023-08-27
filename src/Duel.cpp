@@ -20,7 +20,9 @@ Entity* Duel::attack() {
 
 	Entity* winner = nullptr;
 
-	if (getEntityDistance() == 1) {
+	int distance = _getEntityDistance();
+
+	if (distance == 1) {
 		int nextTurn = _nextTurnGenerator(_randomEngine);
 		int attackIntensity = _attackIntensityGenerator(_randomEngine);
 
@@ -51,7 +53,7 @@ Entity* Duel::attack() {
 	return winner;
 }
 
-int Duel::getEntityDistance() {
+int Duel::_getEntityDistance() {
 	int disX = _one->getPosX() - _two->getPosX();
 	int disY = _one->getPosY() - _two->getPosY();
 

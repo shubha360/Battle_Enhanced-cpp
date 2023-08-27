@@ -2,7 +2,7 @@
 
 int main() {
     Combat combat;
-    combat.init();
+    combat.init("files/battle_ground.txt");
     combat.startBattle();
     combat.endBattle();
 

@@ -1,7 +1,5 @@
 #include "../include/Entity.h"
 
-#include <iostream>
-
 const int Entity::ENTITY_STARTING_HEALTH = 100;
 
 Entity::Entity() {
@@ -32,16 +30,12 @@ Entity* Entity::findTarget(vector<Entity*> opponentList) {
 			Entity* current = opponentList[i];
 
 			int distance = _getDistance(current->getPosX(), current->getPosY());
-			//std::cout << distance << "\n";
 			if (distance < currentDistance) {
+				currentDistance = distance;
 				target = current;
 			}
 		}
-	}
-
-	//if (target == nullptr)
-	//	std::cout << "PROBLEM HERE!\n";
-
+	}	
 	return target;
 }
 

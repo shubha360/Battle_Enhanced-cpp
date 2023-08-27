@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <chrono>
+#include <thread>
 
 #include "Duel.h"
 
@@ -11,7 +13,7 @@ public:
     Combat();
     ~Combat();
 
-    void init();
+    void init(string combatFile);
     void startBattle();
     void endBattle();
 
@@ -24,5 +26,5 @@ private:
     vector<Duel*> _duels;
 
     int _sideOneAlive, _sideTwoAlive;
-    string _topIndent;
+    string _topIndent, _bottomIndent;
 };

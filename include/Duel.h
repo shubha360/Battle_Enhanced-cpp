@@ -10,8 +10,9 @@ public:
 	Duel(Entity* one, Entity* two);
 
 	Entity* attack();
-	int getEntityDistance();
 	bool isDuelEnded() { return _duelEnded; }
+	bool isOneDead() { return _one->isDead(); }
+	bool isTwoDead() { return _two->isDead(); }
 
 private:
 	Entity* _one;
@@ -21,5 +22,7 @@ private:
 	static default_random_engine _randomEngine;
 	static uniform_int_distribution<int> _nextTurnGenerator;
 	static uniform_int_distribution<int> _attackIntensityGenerator;
+
+	int _getEntityDistance();
 };
 

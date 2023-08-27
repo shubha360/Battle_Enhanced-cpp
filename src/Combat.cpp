@@ -3,19 +3,20 @@
 Combat::Combat() {
     _sideOneAlive = 0;
     _sideTwoAlive = 0;
-    _topIndent = string(5, '\n');
+    _topIndent = string(3, '\n');
+    _bottomIndent = string(3, '\n');
 }
 
 Combat::~Combat() {
     endBattle();
 }
 
-void Combat::init() {    
+void Combat::init(string combatFile) {    
     ifstream inputFile;
 
-    inputFile.open("files/test.txt");
+    inputFile.open(combatFile);
     if (inputFile.fail()) {
-        perror("files/test.txt");
+        perror(combatFile.c_str());
         return;
     }
 
@@ -60,55 +61,73 @@ void Combat::init() {
 }
 
 void Combat::startBattle() {
-    cout << "*** Legends of Console Warfare ***\n\n";
+    printBattleGround();
+    chrono::milliseconds duration(50);
 
     while (_sideOneAlive > 0 && _sideTwoAlive > 0) {
-        
-        printBattleGround();
-
+       
         for (int i = 0; i < _duels.size(); i++) {
             
             if (!_duels[i]->isDuelEnded()) {
-                Entity* winner = _duels[i]->attack();
 
-                if (winner != nullptr) {
-                    if (winner->getSign() == '1') {
-                        _sideTwoAlive--;
-                        _duels.push_back(new Duel(winner, winner->findTarget(_sideTwo)));
+                if (_duels[i]->isOneDead() || _duels[i]->isTwoDead()) {
+                    _duels[i]->isDuelEnded();
+                } 
+                else {
+                    this_thread::sleep_for(duration);
+                    Entity* winner = _duels[i]->attack();
+
+                    if (winner != nullptr) {
+                        if (winner->getSign() == '1') {
+                            _sideTwoAlive--;
+                            _duels.push_back(new Duel(winner, winner->findTarget(_sideTwo)));
+                        }
+                        else if (winner->getSign() == '2') {
+                            _sideOneAlive--;
+                            _duels.push_back(new Duel(winner, winner->findTarget(_sideOne)));
+                        }
                     }
-                    else if (winner->getSign() == '2') {
-                        _duels.push_back(new Duel(winner, winner->findTarget(_sideOne)));
-                        _sideOneAlive--;
+
+                    printBattleGround();
+
+                    if (_sideOneAlive == 0 || _sideTwoAlive == 0) {
+                        break;
                     }
-                }
-                
-                if (_sideOneAlive == 0 || _sideTwoAlive == 0) {
-                    break;
                 }
             }
         }
     }
-    printBattleGround();
 }
 
 void Combat::endBattle() {
-    for (Entity* i : _sideOne)
-        delete i;
+    for (int i = 0; i < _sideOne.size(); i++) {
+        if (_sideOne[i] != NULL) {
+            delete _sideOne[i];
+            _sideOne[i] = NULL;
+        }
+    }
 
-    for (Entity* i : _sideTwo)
-        delete i;
+    for (int i = 0; i < _sideTwo.size(); i++) {
+        if (_sideTwo[i] != NULL) {
+            delete _sideTwo[i];
+            _sideTwo[i] = NULL;
+        }
+    }
 
-    for (Duel* i : _duels)
-        delete i;
+    for (int i = 0; i < _duels.size(); i++) {
+        if (_duels[i] != NULL) {
+            delete _duels[i];
+            _duels[i] = NULL;
+        }
+    }
 }
 
 void Combat::printBattleGround() {
-    string output = _topIndent;
+    string output = _topIndent + "*** Enhanced Console Warfare ***\n\n";
     for (int i = 0; i < _battleGround.size(); i++) {
         output += " " + _battleGround[i] + "\n";
     }
-
+    output += _bottomIndent;
     //output += "\n" + to_string(_sideOneAlive) + "\n" + to_string(_sideTwoAlive) + "\n" + to_string(_duels.size()) + "\n\n";
-
     cout << output;
 }
