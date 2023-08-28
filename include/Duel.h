@@ -10,19 +10,18 @@ public:
 	Duel(Entity* one, Entity* two);
 
 	Entity* attack();
-	Entity* getOne() { return _one; }
-	Entity* getTwo() { return _two; }
-	bool isOneDead() { return _one->isDead(); }
-	bool isTwoDead() { return _two->isDead(); }
+	Entity* getSoldier() { return _soldier; }
+	Entity* getTarget() { return _target; }
+	bool isOneDead() { return _soldier->isDead(); }
+	bool isTwoDead() { return _target->isDead(); }
 
 private:
-	Entity* _one;
-	Entity* _two;
+	Entity* _soldier;
+	Entity* _target;
 
+	// variables to randomize
 	static default_random_engine _randomEngine;
 	static uniform_int_distribution<int> _nextTurnGenerator;
-	static uniform_int_distribution<int> _attackIntensityGenerator;
-
-	int _getEntityDistance();
+	static uniform_int_distribution<int> _strikeIntensityGenerator;
 };
 

@@ -12,10 +12,12 @@ public:
 	Entity();
 	Entity(char sign, int posX, int posY, vector<string>* battleGround);
 
-	Entity* findTarget(vector<Entity*> opponentList);
-	void moveTowards(Entity* opponent);
-	void takeDamage(int damage);
-	void died();
+	Entity* findTarget(vector<Entity*> opponentList); // find new target
+	void moveTowards(Entity* target); // move toward target
+	void takeDamage(int damage); // take damage and decrease health
+	void died(); // this entity died
+
+	int getDistance(int targetX, int targetY); // find target distance
 
 	char getSign() { return _sign; }
 	int getPosX() { return _posX; }
@@ -32,7 +34,7 @@ private:
 	vector<string>* _battleGround;
 	Entity* _target;
 
-	int _getDistance(int targetX, int targetY);
+	// functions to to move entity
 	void _moveUp();
 	void _moveDown();
 	void _moveLeft();

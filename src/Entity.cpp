@@ -21,7 +21,9 @@ Entity::Entity(char sign, int posX, int posY, vector<string>* battleGround) {
 	_dead = false;
 	_target = nullptr;
 }
-
+/*
+	Finds the closest target from opponent side and return it.
+*/
 Entity* Entity::findTarget(vector<Entity*> opponentList) {
 	int currentDistance = INT_MAX;
 
@@ -29,8 +31,8 @@ Entity* Entity::findTarget(vector<Entity*> opponentList) {
 		if (!opponentList[i]->isDead()) {
 
 			Entity* current = opponentList[i];
+			int distance = getDistance(current->getPosX(), current->getPosY());
 
-			int distance = _getDistance(current->getPosX(), current->getPosY());
 			if (distance < currentDistance) {
 				currentDistance = distance;
 				_target = current;
@@ -40,49 +42,64 @@ Entity* Entity::findTarget(vector<Entity*> opponentList) {
 	return _target;
 }
 
-void Entity::moveTowards(Entity* opponent) {
-	if (opponent->getPosY() > _posY) {
-		if ((*_battleGround)[_posY + 1][_posX] == ' ') {
+/*
+	Moves towards the target.
+	First tries to move vertically to the same row as the target. If can't tries to move one cell horizontally to the direction of target's column.
+	Starts moving horizontally once in the same row as the target.
+*/
+void Entity::moveTowards(Entity* target) {
+
+	// target is below
+	if (target->getPosY() > _posY) {
+		if ((*_battleGround)[_posY + 1][_posX] == ' ') { // move down if possible
 			_moveDown();
 		}
-		else {
-			if (opponent->getPosX() > _posX) {
-				if ((*_battleGround)[_posY][_posX + 1] == ' ') {
+		else { // can't move down
+			// target is on right
+			if (target->getPosX() > _posX) {
+				if ((*_battleGround)[_posY][_posX + 1] == ' ') { // move right if possible
 					_moveRight();
 				}
 			}
-			else if (opponent->getPosX() < _posX) {
-				if ((*_battleGround)[_posY][_posX - 1] == ' ') {
+			// target is on left
+			else if (target->getPosX() < _posX) {
+				if ((*_battleGround)[_posY][_posX - 1] == ' ') { // move left if possible
 					_moveLeft();
 				}
 			}
 		}
 	}
-	else if (opponent->getPosY() < _posY) {
-		if ((*_battleGround)[_posY - 1][_posX] == ' ') {
+	// target is above
+	else if (target->getPosY() < _posY) {
+		if ((*_battleGround)[_posY - 1][_posX] == ' ') { // move up if possible
 			_moveUp();
 		}
-		else {
-			if (opponent->getPosX() > _posX) {
-				if ((*_battleGround)[_posY][_posX + 1] == ' ') {
+		else { // can't move up
+			// target is on right
+			if (target->getPosX() > _posX) {
+				if ((*_battleGround)[_posY][_posX + 1] == ' ') { // move right if possible
 					_moveRight();
 				}
 			}
-			else if (opponent->getPosX() < _posX) {
-				if ((*_battleGround)[_posY][_posX - 1] == ' ') {
+			// target is on left
+			else if (target->getPosX() < _posX) {
+				if ((*_battleGround)[_posY][_posX - 1] == ' ') { // move left if possible
 					_moveLeft();
 				}
 			}
 		}
 	}
+	// in the same row as target
 	else {
-		if (opponent->getPosX() > _posX) {
-			if ((*_battleGround)[_posY][_posX + 1] == ' ') {
+		// target is on right
+		if (target->getPosX() > _posX) {
+			if ((*_battleGround)[_posY][_posX + 1] == ' ') { // move right if possible
 				_moveRight();
 			}
 		}
-		else if (opponent->getPosX() < _posX) {
-			if ((*_battleGround)[_posY][_posX - 1] == ' ') {
+		// target is on left
+		else if (target->getPosX() < _posX) {
+			if ((*_battleGround)[_posY][_posX - 1] == ' ') { // move left if possible
 				_moveLeft();
 			}
 		}
@@ -102,7 +119,12 @@ void Entity::died() {
 	_target = nullptr;
 }
 
-int Entity::_getDistance(int targetX, int targetY) {
+/*
+	According to pythagorean theorem, distance = square root of (horizontal distance squared + vertical distance squared)
+	The square root part is left out. Because it will add extra overhead and leaving it is fine for this purpose.
+	If x > y then x^2 > y^2
+*/
+int Entity::getDistance(int targetX, int targetY) {
 	int  disX = _posX - targetX;
 	int disY = _posY - targetY;
 

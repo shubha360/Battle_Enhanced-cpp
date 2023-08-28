@@ -1,58 +1,55 @@
 #include "../include/Duel.h"
 
 default_random_engine Duel::_randomEngine = default_random_engine(time(0));
-uniform_int_distribution<int> Duel::_nextTurnGenerator = uniform_int_distribution<int>(1, 2);
-uniform_int_distribution<int> Duel::_attackIntensityGenerator = uniform_int_distribution<int>(1, 5);
+uniform_int_distribution<int> Duel::_nextTurnGenerator = uniform_int_distribution<int>(1, 2); // 1 - soldier strike, 2 - target strike
+uniform_int_distribution<int> Duel::_strikeIntensityGenerator = uniform_int_distribution<int>(1, 5);
 
 Duel::Duel() {
-	_one = nullptr;
-	_two = nullptr;
+	_soldier = nullptr;
+	_target = nullptr;
 }
 
 Duel::Duel(Entity* one, Entity* two) {
-	_one = one;
-	_two = two;
+	_soldier = one;
+	_target = two;
 }
 
+/*
+	If target is not in range, soldier moves towards the target.
+	Fight each other if the two soldiers are in vertically or horizontally adjacent cells.
+	Which entity will strike and strike intensity are determined randomly.
+	Returns the memory location to winner entity.
+*/
 Entity* Duel::attack() {
 
 	Entity* winner = nullptr;
-	int distance = _getEntityDistance();
+	int distance = _soldier->getDistance(_target->getPosX(), _target->getPosY());
 
-	if (distance == 1) {
+	if (distance == 1) { // target in range
 		int nextTurn = _nextTurnGenerator(_randomEngine);
-		int attackIntensity = _attackIntensityGenerator(_randomEngine);
+		int attackIntensity = _strikeIntensityGenerator(_randomEngine);
 
-		if (nextTurn == 1) {
-			_two->takeDamage(20 * attackIntensity);
+		if (nextTurn == 1) { // soldier strike
+			_target->takeDamage(20 * attackIntensity);
 
-			// opponent died
-			if (_two->getHealth() <= 0) {
-				winner = _one;
-
-				_two->died();
+			// target died
+			if (_target->getHealth() <= 0) {
+				winner = _soldier;
+				_target->died();
 			}
 		}
-		else {
-			_one->takeDamage(20 * attackIntensity);
+		else { // target strike
+			_soldier->takeDamage(20 * attackIntensity);
 
 			// soldier died
-			if (_one->getHealth() <= 0) {
-				winner = _two;
-
-				_one->died();
+			if (_soldier->getHealth() <= 0) {
+				winner = _target;
+				_soldier->died();
 			}
 		}
 	}
-	else {
-		_one->moveTowards(_two);
+	else { // target not in range
+		_soldier->moveTowards(_target);
 	}
 	return winner;
-}
-
-int Duel::_getEntityDistance() {
-	int disX = _one->getPosX() - _two->getPosX();
-	int disY = _one->getPosY() - _two->getPosY();
-
-	return (disX * disX) + (disY * disY);
 }
