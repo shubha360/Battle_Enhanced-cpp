@@ -22,7 +22,7 @@ public:
 	int getPosY() { return _posY; }
 	int getHealth() { return _health; }
 	bool isDead() { return _dead; }
-	Entity* getOpponent() { return _opponent; }
+	Entity* getOpponent() { return _target; }
 
 private:
 	char _sign;
@@ -30,7 +30,7 @@ private:
 	int _health;
 	bool _dead;
 	vector<string>* _battleGround;
-	Entity* _opponent;
+	Entity* _target;
 
 	int _getDistance(int targetX, int targetY);
 	void _moveUp();

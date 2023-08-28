@@ -63,7 +63,7 @@ void Combat::init(string combatFile) {
 void Combat::startBattle(int makeAttackSlowInMilli) {
     printBattleGround();
     chrono::milliseconds duration(makeAttackSlowInMilli);
-    int finalWinner;
+    int finalWinner = 0;
 
     while (_sideOneAlive > 0 && _sideTwoAlive > 0) {
        

@@ -8,7 +8,7 @@ Entity::Entity() {
 	_posY = -1;
 	_health = ENTITY_STARTING_HEALTH;
 	_battleGround = nullptr;
-	_opponent = nullptr;
+	_target = nullptr;
 	_dead = false;
 }
 
@@ -19,7 +19,7 @@ Entity::Entity(char sign, int posX, int posY, vector<string>* battleGround) {
 	_health = ENTITY_STARTING_HEALTH;	
 	_battleGround = battleGround;
 	_dead = false;
-	_opponent = nullptr;
+	_target = nullptr;
 }
 
 Entity* Entity::findTarget(vector<Entity*> opponentList) {
@@ -33,11 +33,11 @@ Entity* Entity::findTarget(vector<Entity*> opponentList) {
 			int distance = _getDistance(current->getPosX(), current->getPosY());
 			if (distance < currentDistance) {
 				currentDistance = distance;
-				_opponent = current;
+				_target = current;
 			}
 		}
 	}	
-	return _opponent;
+	return _target;
 }
 
 void Entity::moveTowards(Entity* opponent) {
@@ -99,7 +99,7 @@ void Entity::died() {
 	_sign = ' ';
 	_posX = 0;
 	_posY = 0;
-	_opponent = nullptr;
+	_target = nullptr;
 }
 
 int Entity::_getDistance(int targetX, int targetY) {
