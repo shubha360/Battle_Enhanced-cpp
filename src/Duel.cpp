@@ -1,9 +1,5 @@
 #include "../include/Duel.h"
 
-default_random_engine Duel::_randomEngine = default_random_engine(time(0));
-uniform_int_distribution<int> Duel::_nextTurnGenerator = uniform_int_distribution<int>(1, 2); // 1 - soldier strike, 2 - target strike
-uniform_int_distribution<int> Duel::_strikeIntensityGenerator = uniform_int_distribution<int>(1, 5);
-
 Duel::Duel() {
 	_soldier = nullptr;
 	_target = nullptr;
@@ -22,12 +18,17 @@ Duel::Duel(Entity* one, Entity* two) {
 */
 Entity* Duel::attack() {
 
+	static default_random_engine randomEngine = default_random_engine(time(0));
+	
+	static uniform_int_distribution<int> nextTurnGenerator = uniform_int_distribution<int>(1, 2); // 1 - soldier strike, 2 - target strike
+	static uniform_int_distribution<int> strikeIntensityGenerator = uniform_int_distribution<int>(1, 5);
+
 	Entity* winner = nullptr;
 	int distance = _soldier->getDistance(_target->getPosX(), _target->getPosY());
 
 	if (distance == 1) { // target in range
-		int nextTurn = _nextTurnGenerator(_randomEngine);
-		int attackIntensity = _strikeIntensityGenerator(_randomEngine);
+		int nextTurn = nextTurnGenerator(randomEngine);
+		int attackIntensity = strikeIntensityGenerator(randomEngine);
 
 		if (nextTurn == 1) { // soldier strike
 			_target->takeDamage(20 * attackIntensity);

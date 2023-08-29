@@ -18,10 +18,5 @@ public:
 private:
 	Entity* _soldier;
 	Entity* _target;
-
-	// variables to randomize
-	static default_random_engine _randomEngine;
-	static uniform_int_distribution<int> _nextTurnGenerator;
-	static uniform_int_distribution<int> _strikeIntensityGenerator;
 };
 

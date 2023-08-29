@@ -45,6 +45,7 @@ void Combat::init(string combatFile) {
             }
         }
     }
+    inputFile.close();
 
     /*
         Instead of using two loops for duels of two sides, one loop is used.

@@ -120,15 +120,13 @@ void Entity::died() {
 }
 
 /*
-	According to pythagorean theorem, distance = square root of (horizontal distance squared + vertical distance squared)
-	The square root part is left out. Because it will add extra overhead and leaving it is fine for this purpose.
-	If x > y then x^2 > y^2
+	Distance = horizontal distance + vertical distance
 */
 int Entity::getDistance(int targetX, int targetY) {
-	int  disX = _posX - targetX;
-	int disY = _posY - targetY;
+	int  disX = abs(_posX - targetX);
+	int disY = abs(_posY - targetY);
 
-	return (disX * disX) + (disY * disY);
+	return disX + disY;
 }
 
 void Entity::_moveUp() {

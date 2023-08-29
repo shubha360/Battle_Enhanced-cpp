@@ -19,7 +19,7 @@ public:
     ~Combat();
 
     void init(string combatFile);
-    void startBattle(unsigned int attackIntervalInMills); // Makes
+    void startBattle(unsigned int attackIntervalInMills);
     void endBattle();
 
 private:
