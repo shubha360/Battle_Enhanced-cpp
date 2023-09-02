@@ -1,8 +1,8 @@
 #include "../include/Combat.h"
 
 Combat::Combat() {
-    _sideOneAlive = 0;
-    _sideTwoAlive = 0;
+    _armyOneAlive = 0;
+    _armyTwoAlive = 0;
     _topIndent = string(3, '\n');
     _bottomIndent = string(3, '\n');
 }
@@ -14,7 +14,10 @@ Combat::~Combat() {
 /*
     Mainly reads the battle ground and soldiers from file and initializes the starting duels
 */
-void Combat::init(string combatFile) {    
+void Combat::init(string combatFile) {
+    static random_device seed;
+    static mt19937 randomEngine(seed());
+
     ifstream inputFile;
 
     inputFile.open(combatFile);
@@ -33,42 +36,49 @@ void Combat::init(string combatFile) {
 
                 // soldier of side one
                 if (line[i] == '1') {
-                    _sideOne.push_back(new Entity('1', i, _battleGround.size() - 1, &_battleGround));
-                    _sideOneAlive++;
+                    _armyOne.push_back(new Entity('1', i, _battleGround.size() - 1, &_battleGround));
+                    _armyOneAlive++;
                 }
 
                 // soldier of side two
                 else if (line[i] == '2') {
-                    _sideTwo.push_back(new Entity('2', i, _battleGround.size() - 1, &_battleGround));
-                    _sideTwoAlive++;
+                    _armyTwo.push_back(new Entity('2', i, _battleGround.size() - 1, &_battleGround));
+                    _armyTwoAlive++;
                 }
             }
         }
     }
     inputFile.close();
 
+    // Shuffling army vectors
+    shuffle(_armyOne.begin(), _armyOne.end(), randomEngine);
+    shuffle(_armyTwo.begin(), _armyTwo.end(), randomEngine);
+
     /*
         Instead of using two loops for duels of two sides, one loop is used.
         Also, it will ensure that a second side duel is after adding first a side duel.
     */
     int maxSize;
-    if (_sideOne.size() > _sideTwo.size()) {
-        maxSize = _sideOne.size();
+    if (_armyOne.size() > _armyTwo.size()) {
+        maxSize = _armyOne.size();
     }
     else {
-        maxSize = _sideTwo.size();
+        maxSize = _armyTwo.size();
     }
 
     for (int i = 0; i < maxSize; i++) {
 
-        if (i < _sideOne.size()) {
-            _duels.push_back(new Duel(_sideOne[i], _sideOne[i]->findTarget(_sideTwo)));
+        if (i < _armyOne.size()) {
+            _duels.push_back(new Duel(_armyOne[i], _armyOne[i]->findTarget(_armyTwo)));
         }
 
-        if (i < _sideTwo.size()) {
-            _duels.push_back(new Duel(_sideTwo[i], _sideTwo[i]->findTarget(_sideOne)));
+        if (i < _armyTwo.size()) {
+            _duels.push_back(new Duel(_armyTwo[i], _armyTwo[i]->findTarget(_armyOne)));
         }
     }
+
+    // Shuffling duel vectors
+    shuffle(_duels.begin(), _duels.end(), randomEngine);
 }
 
 /*
@@ -81,7 +91,7 @@ void Combat::startBattle(unsigned int attackIntervalInMills) {
     chrono::milliseconds duration(attackIntervalInMills);
     int finalWinner = 0;
 
-    while (_sideOneAlive > 0 && _sideTwoAlive > 0) {
+    while (_armyOneAlive > 0 && _armyTwoAlive > 0) {
        
         for (int i = 0; i < _duels.size(); i++) {
             
@@ -108,11 +118,11 @@ void Combat::startBattle(unsigned int attackIntervalInMills) {
                     // determine side of alive soldier and initiate new duel
 
                     if (alive->getSign() == '1') {
-                        _duels[i] = new Duel(alive, alive->findTarget(_sideTwo));
+                        _duels[i] = new Duel(alive, alive->findTarget(_armyTwo));
                         i--;
                     }
                     else if (alive->getSign() == '2') {
-                        _duels[i] = new Duel(alive, alive->findTarget(_sideOne));
+                        _duels[i] = new Duel(alive, alive->findTarget(_armyOne));
                         i--;
                     }
                 }
@@ -129,26 +139,26 @@ void Combat::startBattle(unsigned int attackIntervalInMills) {
 
                         if (winner->getSign() == '1') {
 
-                            _sideTwoAlive--;
+                            _armyTwoAlive--;
 
-                            if (_sideTwoAlive <= 0) { // all the soldiers of opposing died
+                            if (_armyTwoAlive <= 0) { // all the soldiers of opposing died
                                 finalWinner = 1;
                                 break;
                             }
 
-                            _duels[i] = new Duel(winner, winner->findTarget(_sideTwo));
+                            _duels[i] = new Duel(winner, winner->findTarget(_armyTwo));
                             i--;
                         }
                         else if (winner->getSign() == '2') {
 
-                            _sideOneAlive--;
+                            _armyOneAlive--;
 
-                            if (_sideOneAlive <= 0) { // all the soldiers of opposing died
+                            if (_armyOneAlive <= 0) { // all the soldiers of opposing died
                                 finalWinner = 2;
                                 break;
                             }
 
-                            _duels[i] = new Duel(winner, winner->findTarget(_sideOne));
+                            _duels[i] = new Duel(winner, winner->findTarget(_armyOne));
                             i--;
                         }
                     }
@@ -165,17 +175,17 @@ void Combat::startBattle(unsigned int attackIntervalInMills) {
     Just deletes the allocated memory if not already deleted
 */
 void Combat::endBattle() {
-    for (int i = 0; i < _sideOne.size(); i++) {
-        if (_sideOne[i] != NULL) {
-            delete _sideOne[i];
-            _sideOne[i] = NULL;
+    for (int i = 0; i < _armyOne.size(); i++) {
+        if (_armyOne[i] != NULL) {
+            delete _armyOne[i];
+            _armyOne[i] = NULL;
         }
     }
 
-    for (int i = 0; i < _sideTwo.size(); i++) {
-        if (_sideTwo[i] != NULL) {
-            delete _sideTwo[i];
-            _sideTwo[i] = NULL;
+    for (int i = 0; i < _armyTwo.size(); i++) {
+        if (_armyTwo[i] != NULL) {
+            delete _armyTwo[i];
+            _armyTwo[i] = NULL;
         }
     }
 

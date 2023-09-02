@@ -17,8 +17,8 @@ Duel::Duel(Entity* one, Entity* two) {
 	Returns the memory location to winner entity.
 */
 Entity* Duel::attack() {
-
-	static default_random_engine randomEngine = default_random_engine(time(0));
+	static random_device ranDev;
+	static mt19937 mt(ranDev());
 	
 	static uniform_int_distribution<int> nextTurnGenerator = uniform_int_distribution<int>(1, 2); // 1 - soldier strike, 2 - target strike
 	static uniform_int_distribution<int> strikeIntensityGenerator = uniform_int_distribution<int>(1, 5);
@@ -27,8 +27,8 @@ Entity* Duel::attack() {
 	int distance = _soldier->getDistance(_target->getPosX(), _target->getPosY());
 
 	if (distance == 1) { // target in range
-		int nextTurn = nextTurnGenerator(randomEngine);
-		int attackIntensity = strikeIntensityGenerator(randomEngine);
+		int nextTurn = nextTurnGenerator(mt);
+		int attackIntensity = strikeIntensityGenerator(mt);
 
 		if (nextTurn == 1) { // soldier strike
 			_target->takeDamage(20 * attackIntensity);

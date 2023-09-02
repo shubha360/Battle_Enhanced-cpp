@@ -20,15 +20,15 @@ public:
 
     void init(string combatFile);
     void startBattle(unsigned int attackIntervalInMills);
-    void endBattle();
+    void endBattle();    
 
 private:
     vector<string> _battleGround; // main battle ground
-    vector<Entity*> _sideOne; // vector of side one
-    vector<Entity*> _sideTwo;  // vector of side two
+    vector<Entity*> _armyOne; // vector of side one
+    vector<Entity*> _armyTwo;  // vector of side two
     vector<Duel*> _duels; // vector of duels
 
-    int _sideOneAlive, _sideTwoAlive;
+    int _armyOneAlive, _armyTwoAlive;
     string _topIndent, _bottomIndent;
 
     void _printBattleGround();
