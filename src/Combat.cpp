@@ -88,79 +88,79 @@ void Combat::startBattle(unsigned int attackIntervalInMills) {
 
     while (_armyOneAlive > 0 && _armyTwoAlive > 0) {
         
-            for (int i = 0; i < _duels.size(); i++) {
+        for (int i = 0; i < _duels.size(); i++) {
 
-                if (_duels[i] != NULL) {
+            if (_duels[i] != NULL) {
 
-                    /*
-                        If one of the soldiers in duel died in another duel, this duel is deleted.
-                        The alive soldier finds new target and initiates a new duel.
-                    */
-                    if (_duels[i]->isOneDead() || _duels[i]->isTwoDead()) {
+                /*
+                    If one of the soldiers in duel died in another duel, this duel is deleted.
+                    The alive soldier finds new target and initiates a new duel.
+                */
+                if (_duels[i]->isOneDead() || _duels[i]->isTwoDead()) {
 
-                        Entity* alive = nullptr;
+                    Entity* alive = nullptr;
 
-                        if (_duels[i]->isOneDead()) { // two is alive
-                            alive = _duels[i]->getTarget();
-                        }
-                        else { // one is alive
-                            alive = _duels[i]->getSoldier();
-                        }
+                    if (_duels[i]->isOneDead()) { // two is alive
+                        alive = _duels[i]->getTarget();
+                    }
+                    else { // one is alive
+                        alive = _duels[i]->getSoldier();
+                    }
+
+                    delete _duels[i];
+                    _duels[i] = NULL;
+
+                    // determine side of alive soldier and initiate new duel
+
+                    if (alive->getSign() == '1') {
+                        _duels[i] = new Duel(alive, alive->findTarget(_armyTwo));
+                        i--;
+                    }
+                    else if (alive->getSign() == '2') {
+                        _duels[i] = new Duel(alive, alive->findTarget(_armyOne));
+                        i--;
+                    }
+                }
+                else {
+                    std::this_thread::sleep_for(duration);
+                    Entity* winner = _duels[i]->attack();
+
+                    if (winner != nullptr) { // no nullptr means duel ended
 
                         delete _duels[i];
                         _duels[i] = NULL;
 
-                        // determine side of alive soldier and initiate new duel
+                        // determine side of winner soldier and initiate new duel if not all the soldiers of opposing side died
 
-                        if (alive->getSign() == '1') {
-                            _duels[i] = new Duel(alive, alive->findTarget(_armyTwo));
+                        if (winner->getSign() == '1') {
+
+                            _armyTwoAlive--;
+
+                            if (_armyTwoAlive <= 0) { // all the soldiers of opposing died
+                                finalWinner = 1;
+                                break;
+                            }
+
+                            _duels[i] = new Duel(winner, winner->findTarget(_armyTwo));
                             i--;
                         }
-                        else if (alive->getSign() == '2') {
-                            _duels[i] = new Duel(alive, alive->findTarget(_armyOne));
+                        else if (winner->getSign() == '2') {
+
+                            _armyOneAlive--;
+
+                            if (_armyOneAlive <= 0) { // all the soldiers of opposing died
+                                finalWinner = 2;
+                                break;
+                            }
+
+                            _duels[i] = new Duel(winner, winner->findTarget(_armyOne));
                             i--;
                         }
                     }
-                    else {
-                        std::this_thread::sleep_for(duration);
-                        Entity* winner = _duels[i]->attack();
-
-                        if (winner != nullptr) { // no nullptr means duel ended
-
-                            delete _duels[i];
-                            _duels[i] = NULL;
-
-                            // determine side of winner soldier and initiate new duel if not all the soldiers of opposing side died
-
-                            if (winner->getSign() == '1') {
-
-                                _armyTwoAlive--;
-
-                                if (_armyTwoAlive <= 0) { // all the soldiers of opposing died
-                                    finalWinner = 1;
-                                    break;
-                                }
-
-                                _duels[i] = new Duel(winner, winner->findTarget(_armyTwo));
-                                i--;
-                            }
-                            else if (winner->getSign() == '2') {
-
-                                _armyOneAlive--;
-
-                                if (_armyOneAlive <= 0) { // all the soldiers of opposing died
-                                    finalWinner = 2;
-                                    break;
-                                }
-
-                                _duels[i] = new Duel(winner, winner->findTarget(_armyOne));
-                                i--;
-                            }
-                        }
-                        _printBattleGround();
-                    }
+                    _printBattleGround();
                 }
             }
+        }
     }
     _printBattleGround();
     std::cout << finalWinner << " won!\n\n";
