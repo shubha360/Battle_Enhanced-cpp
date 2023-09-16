@@ -157,8 +157,8 @@ void Combat::startBattle(unsigned int attackIntervalInMills) {
                                 i--;
                             }
                         }
+                        _printBattleGround();
                     }
-                    _printBattleGround();
                 }
             }
     }
@@ -198,7 +198,6 @@ void Combat::_printBattleGround() {
     static std::string bottomIndent = std::string(3, '\n');
 
     std::string output = topIndent + "*** Enhanced Console Warfare ***\n\n";
-    output += "Space - Pause/Resume\nEsc - Stop and Exit\n\n";
     for (int i = 0; i < _battleGround.size(); i++) {
         output += " " + _battleGround[i] + "\n";
     }

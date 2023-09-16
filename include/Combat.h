@@ -10,7 +10,6 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
-#include <conio.h>
 
 #include "Duel.h"
 
