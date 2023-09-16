@@ -15,8 +15,12 @@ public:
 	bool isOneDead() { return _soldier->isDead(); }
 	bool isTwoDead() { return _target->isDead(); }
 
+	static std::mt19937 RandomEngine;
+
 private:
 	Entity* _soldier;
 	Entity* _target;
+
+	static std::random_device _seed;
 };
 

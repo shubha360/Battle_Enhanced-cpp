@@ -12,7 +12,7 @@ Entity::Entity() {
 	_dead = false;
 }
 
-Entity::Entity(char sign, int posX, int posY, vector<string>* battleGround) {
+Entity::Entity(char sign, int posX, int posY, std::vector<std::string>* battleGround) {
 	_sign = sign;
 	_posX = posX;
 	_posY = posY;
@@ -24,7 +24,7 @@ Entity::Entity(char sign, int posX, int posY, vector<string>* battleGround) {
 /*
 	Finds the closest target from opponent side and return it.
 */
-Entity* Entity::findTarget(vector<Entity*> opponentList) {
+Entity* Entity::findTarget(std::vector<Entity*> opponentList) {
 	int currentDistance = INT_MAX;
 
 	for (int i = 0; i < opponentList.size(); i++) {

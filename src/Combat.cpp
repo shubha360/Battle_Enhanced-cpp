@@ -3,8 +3,6 @@
 Combat::Combat() {
     _armyOneAlive = 0;
     _armyTwoAlive = 0;
-    _topIndent = string(3, '\n');
-    _bottomIndent = string(3, '\n');
 }
 
 Combat::~Combat() {
@@ -14,11 +12,8 @@ Combat::~Combat() {
 /*
     Mainly reads the battle ground and soldiers from file and initializes the starting duels
 */
-void Combat::init(string combatFile) {
-    static random_device seed;
-    static mt19937 randomEngine(seed());
-
-    ifstream inputFile;
+void Combat::init(std::string combatFile) {
+    static std::ifstream inputFile;
 
     inputFile.open(combatFile);
     if (inputFile.fail()) {
@@ -26,7 +21,7 @@ void Combat::init(string combatFile) {
         return;
     }
 
-    string line;
+    std::string line;
 
     while (getline(inputFile, line)) {
         _battleGround.push_back(line);
@@ -50,9 +45,9 @@ void Combat::init(string combatFile) {
     }
     inputFile.close();
 
-    // Shuffling army vectors
-    shuffle(_armyOne.begin(), _armyOne.end(), randomEngine);
-    shuffle(_armyTwo.begin(), _armyTwo.end(), randomEngine);
+    // Shuffling army vectors for randomness
+    shuffle(_armyOne.begin(), _armyOne.end(), Duel::RandomEngine);
+    shuffle(_armyTwo.begin(), _armyTwo.end(), Duel::RandomEngine);
 
     /*
         Instead of using two loops for duels of two sides, one loop is used.
@@ -77,8 +72,8 @@ void Combat::init(string combatFile) {
         }
     }
 
-    // Shuffling duel vectors
-    shuffle(_duels.begin(), _duels.end(), randomEngine);
+    // Shuffling duel vectors for randomness in fight
+    shuffle(_duels.begin(), _duels.end(), Duel::RandomEngine);
 }
 
 /*
@@ -88,87 +83,87 @@ void Combat::init(string combatFile) {
 void Combat::startBattle(unsigned int attackIntervalInMills) {
 
     _printBattleGround();
-    chrono::milliseconds duration(attackIntervalInMills);
+    std::chrono::milliseconds duration(attackIntervalInMills);
     int finalWinner = 0;
 
     while (_armyOneAlive > 0 && _armyTwoAlive > 0) {
-       
-        for (int i = 0; i < _duels.size(); i++) {
-            
-            if (_duels[i] != NULL) {
+        
+            for (int i = 0; i < _duels.size(); i++) {
 
-                /*
-                    If one of the soldiers in duel died in another duel, this duel is deleted.
-                    The alive soldier finds new target and initiates a new duel.
-                */
-                if (_duels[i]->isOneDead() || _duels[i]->isTwoDead()) {
-                    
-                    Entity* alive = nullptr;
+                if (_duels[i] != NULL) {
 
-                    if (_duels[i]->isOneDead()) { // two is alive
-                        alive = _duels[i]->getTarget();
-                    }
-                    else { // one is alive
-                        alive = _duels[i]->getSoldier(); 
-                    }
+                    /*
+                        If one of the soldiers in duel died in another duel, this duel is deleted.
+                        The alive soldier finds new target and initiates a new duel.
+                    */
+                    if (_duels[i]->isOneDead() || _duels[i]->isTwoDead()) {
 
-                    delete _duels[i];
-                    _duels[i] = NULL;
+                        Entity* alive = nullptr;
 
-                    // determine side of alive soldier and initiate new duel
-
-                    if (alive->getSign() == '1') {
-                        _duels[i] = new Duel(alive, alive->findTarget(_armyTwo));
-                        i--;
-                    }
-                    else if (alive->getSign() == '2') {
-                        _duels[i] = new Duel(alive, alive->findTarget(_armyOne));
-                        i--;
-                    }
-                }
-                else {
-                    this_thread::sleep_for(duration);
-                    Entity* winner = _duels[i]->attack();
-
-                    if (winner != nullptr) { // no nullptr means duel ended
+                        if (_duels[i]->isOneDead()) { // two is alive
+                            alive = _duels[i]->getTarget();
+                        }
+                        else { // one is alive
+                            alive = _duels[i]->getSoldier();
+                        }
 
                         delete _duels[i];
                         _duels[i] = NULL;
 
-                        // determine side of winner soldier and initiate new duel if not all the soldiers of opposing side died
+                        // determine side of alive soldier and initiate new duel
 
-                        if (winner->getSign() == '1') {
-
-                            _armyTwoAlive--;
-
-                            if (_armyTwoAlive <= 0) { // all the soldiers of opposing died
-                                finalWinner = 1;
-                                break;
-                            }
-
-                            _duels[i] = new Duel(winner, winner->findTarget(_armyTwo));
+                        if (alive->getSign() == '1') {
+                            _duels[i] = new Duel(alive, alive->findTarget(_armyTwo));
                             i--;
                         }
-                        else if (winner->getSign() == '2') {
-
-                            _armyOneAlive--;
-
-                            if (_armyOneAlive <= 0) { // all the soldiers of opposing died
-                                finalWinner = 2;
-                                break;
-                            }
-
-                            _duels[i] = new Duel(winner, winner->findTarget(_armyOne));
+                        else if (alive->getSign() == '2') {
+                            _duels[i] = new Duel(alive, alive->findTarget(_armyOne));
                             i--;
                         }
                     }
+                    else {
+                        std::this_thread::sleep_for(duration);
+                        Entity* winner = _duels[i]->attack();
+
+                        if (winner != nullptr) { // no nullptr means duel ended
+
+                            delete _duels[i];
+                            _duels[i] = NULL;
+
+                            // determine side of winner soldier and initiate new duel if not all the soldiers of opposing side died
+
+                            if (winner->getSign() == '1') {
+
+                                _armyTwoAlive--;
+
+                                if (_armyTwoAlive <= 0) { // all the soldiers of opposing died
+                                    finalWinner = 1;
+                                    break;
+                                }
+
+                                _duels[i] = new Duel(winner, winner->findTarget(_armyTwo));
+                                i--;
+                            }
+                            else if (winner->getSign() == '2') {
+
+                                _armyOneAlive--;
+
+                                if (_armyOneAlive <= 0) { // all the soldiers of opposing died
+                                    finalWinner = 2;
+                                    break;
+                                }
+
+                                _duels[i] = new Duel(winner, winner->findTarget(_armyOne));
+                                i--;
+                            }
+                        }
+                    }
+                    _printBattleGround();
                 }
-                _printBattleGround();
             }
-        }
     }
     _printBattleGround();
-    cout << finalWinner << " won!\n\n";
+    std::cout << finalWinner << " won!\n\n";
 }
 
 /*
@@ -198,10 +193,15 @@ void Combat::endBattle() {
 }
 
 void Combat::_printBattleGround() {
-    string output = _topIndent + "*** Enhanced Console Warfare ***\n\n";
+    
+    static std::string topIndent = std::string(3, '\n');
+    static std::string bottomIndent = std::string(3, '\n');
+
+    std::string output = topIndent + "*** Enhanced Console Warfare ***\n\n";
+    output += "Space - Pause/Resume\nEsc - Stop and Exit\n\n";
     for (int i = 0; i < _battleGround.size(); i++) {
         output += " " + _battleGround[i] + "\n";
     }
-    output += _bottomIndent;
-    cout << output;
+    output += bottomIndent;
+    std::cout << output;
 }

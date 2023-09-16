@@ -10,6 +10,7 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
+#include <conio.h>
 
 #include "Duel.h"
 
@@ -18,18 +19,17 @@ public:
     Combat();
     ~Combat();
 
-    void init(string combatFile);
+    void init(std::string combatFile);
     void startBattle(unsigned int attackIntervalInMills);
     void endBattle();    
 
 private:
-    vector<string> _battleGround; // main battle ground
-    vector<Entity*> _armyOne; // vector of side one
-    vector<Entity*> _armyTwo;  // vector of side two
-    vector<Duel*> _duels; // vector of duels
+    std::vector<std::string> _battleGround; // main battle ground
+    std::vector<Entity*> _armyOne; // vector of side one
+    std::vector<Entity*> _armyTwo;  // vector of side two
+    std::vector<Duel*> _duels; // vector of duels
 
     int _armyOneAlive, _armyTwoAlive;
-    string _topIndent, _bottomIndent;
-
+    
     void _printBattleGround();
 };

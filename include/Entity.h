@@ -3,16 +3,14 @@
 #include <vector>
 #include <string>
 
-using namespace std;
-
 class Entity {
 public:
 	static const int ENTITY_STARTING_HEALTH;
 
 	Entity();
-	Entity(char sign, int posX, int posY, vector<string>* battleGround);
+	Entity(char sign, int posX, int posY, std::vector<std::string>* battleGround);
 
-	Entity* findTarget(vector<Entity*> opponentList); // find new target
+	Entity* findTarget(std::vector<Entity*> opponentList); // find new target
 	void moveTowards(Entity* target); // move toward target
 	void takeDamage(int damage); // take damage and decrease health
 	void died(); // this entity died
@@ -31,7 +29,7 @@ private:
 	int _posX, _posY;
 	int _health;
 	bool _dead;
-	vector<string>* _battleGround;
+	std::vector<std::string>* _battleGround;
 	Entity* _target;
 
 	// functions to to move entity

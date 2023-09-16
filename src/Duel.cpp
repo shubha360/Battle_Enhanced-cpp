@@ -1,5 +1,8 @@
 #include "../include/Duel.h"
 
+std::random_device Duel::_seed;
+std::mt19937 Duel::RandomEngine(_seed());
+
 Duel::Duel() {
 	_soldier = nullptr;
 	_target = nullptr;
@@ -17,18 +20,16 @@ Duel::Duel(Entity* one, Entity* two) {
 	Returns the memory location to winner entity.
 */
 Entity* Duel::attack() {
-	static random_device ranDev;
-	static mt19937 mt(ranDev());
 	
-	static uniform_int_distribution<int> nextTurnGenerator = uniform_int_distribution<int>(1, 2); // 1 - soldier strike, 2 - target strike
-	static uniform_int_distribution<int> strikeIntensityGenerator = uniform_int_distribution<int>(1, 5);
+	static std::uniform_int_distribution<int> nextTurnGenerator = std::uniform_int_distribution<int>(1, 2); // 1 - soldier strike, 2 - target strike
+	static std::uniform_int_distribution<int> strikeIntensityGenerator = std::uniform_int_distribution<int>(1, 5);
 
 	Entity* winner = nullptr;
 	int distance = _soldier->getDistance(_target->getPosX(), _target->getPosY());
 
 	if (distance == 1) { // target in range
-		int nextTurn = nextTurnGenerator(mt);
-		int attackIntensity = strikeIntensityGenerator(mt);
+		int nextTurn = nextTurnGenerator(RandomEngine);
+		int attackIntensity = strikeIntensityGenerator(RandomEngine);
 
 		if (nextTurn == 1) { // soldier strike
 			_target->takeDamage(20 * attackIntensity);
