@@ -51,7 +51,7 @@ void Combat::init(std::string combatFile) {
 
     /*
         Instead of using two loops for duels of two sides, one loop is used.
-        Also, it will ensure that a second side duel is after adding first a side duel.
+        Also, it will ensure that a second army duel is added after adding a first army duel.
     */
     int maxSize;
     if (_armyOne.size() > _armyTwo.size()) {
@@ -82,7 +82,7 @@ void Combat::init(std::string combatFile) {
 */
 void Combat::startBattle(unsigned int attackIntervalInMills) {
 
-    _printBattleGround();
+    printBattleGround("\n");
     std::chrono::milliseconds duration(attackIntervalInMills);
     int finalWinner = 0;
 
@@ -162,12 +162,11 @@ void Combat::startBattle(unsigned int attackIntervalInMills) {
             }
         }
     }
-    _printBattleGround();
-    std::cout << finalWinner << " won!\n\n";
+    printBattleGround(std::to_string(finalWinner) + " won!");    
 }
 
 /*
-    Just deletes the allocated memory if not already deleted
+    Just deletes the allocated memories if not already deleted
 */
 void Combat::endBattle() {
     for (int i = 0; i < _armyOne.size(); i++) {
@@ -192,15 +191,27 @@ void Combat::endBattle() {
     }
 }
 
-void Combat::_printBattleGround() {
+void Combat::printBattleGround(std::string promptText) {
     
-    static std::string topIndent = std::string(3, '\n');
-    static std::string bottomIndent = std::string(3, '\n');
+    static std::string topIndent = std::string(20, '\n');
+    static std::string bottomIndent = std::string(10, '\n');
+    
+    static std::string heading =
+        "  ##               ##  ##      #######   #########   ##      #######   #########\n"
+        "   ##             ##  #  #     ##    ##  ##         #  #     ##    ##  ##\n"
+        "    ##     #     ##  #    #    ##    ##  ########  #    #    ##    ##  #######\n"
+        "     ##   ###   ##  ########   #######   ##       ########   #######   ######\n"
+        "      ## ## ## ##  ##      ##  ##    ##  ##      ##      ##  ##    ##  ##\n"
+        "       ##     ##  ##        ## ##     ## ##     ##        ## ##     ## #########\n\n";
 
-    std::string output = topIndent + "*** Enhanced Console Warfare ***\n\n";
+    std::string output = topIndent + heading; 
+
     for (int i = 0; i < _battleGround.size(); i++) {
         output += " " + _battleGround[i] + "\n";
     }
+
+    output += "\n\n  " + promptText;
+
     output += bottomIndent;
     std::cout << output;
 }

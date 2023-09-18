@@ -20,7 +20,9 @@ public:
 
     void init(std::string combatFile);
     void startBattle(unsigned int attackIntervalInMills);
-    void endBattle();    
+    void endBattle();
+
+    void printBattleGround(std::string promptText);
 
 private:
     std::vector<std::string> _battleGround; // main battle ground
@@ -29,6 +31,4 @@ private:
     std::vector<Duel*> _duels; // vector of duels
 
     int _armyOneAlive, _armyTwoAlive;
-    
-    void _printBattleGround();
 };
