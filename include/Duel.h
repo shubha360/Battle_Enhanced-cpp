@@ -6,7 +6,6 @@
 
 class Duel {
 public:
-	Duel();
 	Duel(Entity* one, Entity* two);
 
 	Entity* attack();

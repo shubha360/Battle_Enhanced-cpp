@@ -9,7 +9,7 @@ int main() {
 
     combat.printBattleGround("Press any key to begin war!");
 
-    int input = _getch(); // wait for user input before begining war
+    int input = _getch(); // wait for user input before beginning war
 
     combat.startBattle(0);
     combat.endBattle();

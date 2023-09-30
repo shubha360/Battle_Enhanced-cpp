@@ -18,11 +18,11 @@ public:
     Combat();
     ~Combat();
 
-    void init(std::string combatFile);
-    void startBattle(unsigned int attackIntervalInMills);
+    void init(const std::string& combatFile);
+    void startBattle(const unsigned int& attackIntervalInMills);
     void endBattle();
 
-    void printBattleGround(std::string promptText);
+    void printBattleGround(const std::string& promptText = "");
 
 private:
     std::vector<std::string> _battleGround; // main battle ground

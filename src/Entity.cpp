@@ -2,16 +2,6 @@
 
 const int Entity::ENTITY_STARTING_HEALTH = 100;
 
-Entity::Entity() {
-	_sign = ' ';
-	_posX = -1;
-	_posY = -1;
-	_health = ENTITY_STARTING_HEALTH;
-	_battleGround = nullptr;
-	_target = nullptr;
-	_dead = false;
-}
-
 Entity::Entity(char sign, int posX, int posY, std::vector<std::string>* battleGround) {
 	_sign = sign;
 	_posX = posX;
@@ -24,7 +14,7 @@ Entity::Entity(char sign, int posX, int posY, std::vector<std::string>* battleGr
 /*
 	Finds the closest target from opponent side and return it.
 */
-Entity* Entity::findTarget(std::vector<Entity*> opponentList) {
+Entity* Entity::findTarget(const std::vector<Entity*>& opponentList) {
 	int currentDistance = INT_MAX;
 
 	for (int i = 0; i < opponentList.size(); i++) {
@@ -106,7 +96,7 @@ void Entity::moveTowards(Entity* target) {
 	}
 }
 
-void Entity::takeDamage(int damage) {
+void Entity::takeDamage(const int& damage) {
 	_health -= damage;
 }
 
@@ -122,7 +112,7 @@ void Entity::died() {
 /*
 	Distance = horizontal distance + vertical distance
 */
-int Entity::getDistance(int targetX, int targetY) {
+int Entity::getDistance(const int& targetX, const int& targetY) {
 	int  disX = abs(_posX - targetX);
 	int disY = abs(_posY - targetY);
 

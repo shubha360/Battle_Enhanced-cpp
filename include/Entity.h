@@ -7,15 +7,14 @@ class Entity {
 public:
 	static const int ENTITY_STARTING_HEALTH;
 
-	Entity();
 	Entity(char sign, int posX, int posY, std::vector<std::string>* battleGround);
 
-	Entity* findTarget(std::vector<Entity*> opponentList); // find new target
+	Entity* findTarget(const std::vector<Entity*>& opponentList); // find new target
 	void moveTowards(Entity* target); // move toward target
-	void takeDamage(int damage); // take damage and decrease health
+	void takeDamage(const int& damage); // take damage and decrease health
 	void died(); // this entity died
 
-	int getDistance(int targetX, int targetY); // find target distance
+	int getDistance(const int& targetX, const int& targetY); // find target distance
 
 	char getSign() { return _sign; }
 	int getPosX() { return _posX; }

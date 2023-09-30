@@ -12,7 +12,7 @@ Combat::~Combat() {
 /*
     Mainly reads the battle ground and soldiers from file and initializes the starting duels
 */
-void Combat::init(std::string combatFile) {
+void Combat::init(const std::string& combatFile) {
     static std::ifstream inputFile;
 
     inputFile.open(combatFile);
@@ -80,9 +80,9 @@ void Combat::init(std::string combatFile) {
     Performs the duels until every soldiers of one the sides die.
     Initiates new duels for winner of ended duels.
 */
-void Combat::startBattle(unsigned int attackIntervalInMills) {
+void Combat::startBattle(const unsigned int& attackIntervalInMills) {
 
-    printBattleGround("\n");
+    printBattleGround();
     std::chrono::milliseconds duration(attackIntervalInMills);
     int finalWinner = 0;
 
@@ -157,7 +157,7 @@ void Combat::startBattle(unsigned int attackIntervalInMills) {
                             i--;
                         }
                     }
-                    _printBattleGround();
+                    printBattleGround();
                 }
             }
         }
@@ -191,7 +191,7 @@ void Combat::endBattle() {
     }
 }
 
-void Combat::printBattleGround(std::string promptText) {
+void Combat::printBattleGround(const std::string& promptText) {
     
     static std::string topIndent = std::string(20, '\n');
     static std::string bottomIndent = std::string(10, '\n');

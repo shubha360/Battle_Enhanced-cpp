@@ -3,11 +3,6 @@
 std::random_device Duel::_seed;
 std::mt19937 Duel::RandomEngine(_seed());
 
-Duel::Duel() {
-	_soldier = nullptr;
-	_target = nullptr;
-}
-
 Duel::Duel(Entity* one, Entity* two) {
 	_soldier = one;
 	_target = two;
